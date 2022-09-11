@@ -7,25 +7,27 @@ import { Recipe } from "./recipe.model";
 @Injectable()
 export class RecipeService{
   recipeChanged = new Subject<Recipe[]>();
-    private recipes: Recipe[] = [
-        new Recipe('Briyani','This is Hybredabad Briyani',
-        'https://media.architecturaldigest.in/wp-content/uploads/2019/10/Mumbai-Best-Biryani-Awadhi-gosht-chap-biryani-at-Ummrao.jpg',
-        [
-            new ingredient('chiken', 2),
-            new ingredient('rice',1)
-        ]),
-        new Recipe('!st Briyani','This is Hybredabad Briyani',
-        'https://media.architecturaldigest.in/wp-content/uploads/2019/10/Mumbai-Best-Biryani-Awadhi-gosht-chap-biryani-at-Ummrao.jpg',
-        [
-            new ingredient('rice',1)
+    // private recipes: Recipe[] = [
+    //     new Recipe('Briyani','This is Hybredabad Briyani',
+    //     'https://media.architecturaldigest.in/wp-content/uploads/2019/10/Mumbai-Best-Biryani-Awadhi-gosht-chap-biryani-at-Ummrao.jpg',
+    //     [
+    //         new ingredient('chiken', 2),
+    //         new ingredient('rice',1)
+    //     ]),
+    //     new Recipe('!st Briyani','This is Hybredabad Briyani',
+    //     'https://media.architecturaldigest.in/wp-content/uploads/2019/10/Mumbai-Best-Biryani-Awadhi-gosht-chap-biryani-at-Ummrao.jpg',
+    //     [
+    //         new ingredient('rice',1)
 
-        ]),
-        new Recipe('# stBriyani','This is Hybredabad Briyani',
-        'https://media.architecturaldigest.in/wp-content/uploads/2019/10/Mumbai-Best-Biryani-Awadhi-gosht-chap-biryani-at-Ummrao.jpg',
-        [
-            new ingredient('rice',1)
-        ])
-      ];
+    //     ]),
+    //     new Recipe('# stBriyani','This is Hybredabad Briyani',
+    //     'https://media.architecturaldigest.in/wp-content/uploads/2019/10/Mumbai-Best-Biryani-Awadhi-gosht-chap-biryani-at-Ummrao.jpg',
+    //     [
+    //         new ingredient('rice',1)
+    //     ])
+    //   ];
+
+    private recipes: Recipe [] = [];
 
       constructor(private slService: ShoppingListService) {}
 
@@ -63,6 +65,11 @@ export class RecipeService{
       addIngredientsintoShoppingList(ingredients: ingredient[])
       {
         this.slService.addIngredients(ingredients);
+      }
+
+      setRecipes(recipes : Recipe []){
+       this.recipes =  recipes;
+       this.recipeChanged.next(this.recipes.slice());
       }
     
 }
