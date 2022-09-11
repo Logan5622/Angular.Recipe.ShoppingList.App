@@ -42,6 +42,7 @@ onFetchData(){
 
 onLogout(){
     this.authService.logout();
+    //for test
 }
 ngOnDestroy(): void {
     this.UserSub.unsubscribe();
