@@ -19,6 +19,7 @@ export class AuthService {
     constructor(private http: HttpClient, private router: Router){}
     
     user = new BehaviorSubject<User>(null);
+    expirationTimer : any;
 
     signgUp(email: string, password: string){
         return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyB-WJO9cv0FIfzJ1tjJMXEHskLcMh0UAUc',
@@ -52,8 +53,41 @@ export class AuthService {
     logout(){
         this.user.next(null);
         this.router.navigate(['/auth']);
+        localStorage.removeItem('userdata');
+        if(this.expirationTimer){
+            clearTimeout(this.expirationTimer);
+        }
+        this.expirationTimer = null;
         }
 
+    autoLogin(){
+       const userdata : {
+        email: string;
+        userId: string;
+        _token : string;
+        _tokenExpirationDate: string;
+       } = JSON.parse( localStorage.getItem('userdata'));
+       
+       if(!userdata){
+        return;
+       }
+       const loadedUser = new User(userdata.email,userdata.userId,userdata._token, new Date(userdata._tokenExpirationDate));
+       
+       if(userdata._token){
+
+            this.user.next(loadedUser); 
+            const expirestime = new Date(userdata._tokenExpirationDate).getDate() - new Date().getTime();
+            this.autoLogout(expirestime);
+       }
+       
+    }
+    
+    autoLogout(expirationTimeOut: number){
+         this.expirationTimer = setTimeout(()=>{
+            this.logout();
+        },3000);
+    }
+    
     private handleAuthentication(email: string, userId: string , token: string, expiresIn : number){
         // getTime return current timestamp in milliseconfd that's why we are mutlipe into 1000 in the tokens because token was in seconds
         const expirationDate = new Date( new Date().getTime() + ( expiresIn * 1000)); 
@@ -62,7 +96,9 @@ export class AuthService {
             userId,
             token,
             expirationDate);
-        this.user.next(user);  
+        this.user.next(user);
+        this.autoLogout(expiresIn * 1000);  
+        localStorage.setItem('userdata', JSON.stringify(user));
     }
     private handleErrors(errorRes : HttpErrorResponse){
         let errorMessage = 'An unexecpeted error occurred';
