@@ -85,7 +85,7 @@ export class AuthService {
     autoLogout(expirationTimeOut: number){
          this.expirationTimer = setTimeout(()=>{
             this.logout();
-        },3000);
+        },expirationTimeOut);
     }
     
     private handleAuthentication(email: string, userId: string , token: string, expiresIn : number){

@@ -67,9 +67,7 @@ export class AuthComponent implements OnDestroy{
         this.errorValue = null;
     }
 
-    ngOnDestroy(): void {
-        this.closeSub.unsubscribe();
-    }
+    
     private onShowErrorAlert(message : string){
        const alertComponentFactory = this.componentFactoryResolver
        .resolveComponentFactory(AlertsComponent);
@@ -83,5 +81,9 @@ export class AuthComponent implements OnDestroy{
         hostviewContainerRef.clear();
        });
 
+    }
+
+    ngOnDestroy(): void {
+        this.closeSub.unsubscribe();
     }
 }
